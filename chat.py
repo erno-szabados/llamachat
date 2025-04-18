@@ -1,9 +1,13 @@
 import subprocess
 import re
+from colorama import Fore, Style, init
 
 LLAMA_CPP_PATH="/usr/local/bin/llama-run"
 MODEL_PATH="/home/eszabados/workspace/models/SmolLM2-360M-Instruct-Q8_0.gguf"
 FLITE_VOICE="/home/eszabados/voices/cmu_us_clb.flitevox"
+
+# Initialize colorama
+init(autoreset=True)
 
 history = []
 
@@ -61,9 +65,9 @@ def clean_ansi_codes(text):
     return ansi_escape.sub('', text)
     
 if __name__ == "__main__":
-    print(f"Interactive chat with {MODEL_PATH}")
+    print(f"{Fore.CYAN}Interactive chat with {MODEL_PATH}")
     while True:
-        user_input = input("You: ")
+        user_input = input(f"{Fore.GREEN}You: {Style.RESET_ALL}")
         if user_input.strip().lower() == "exit":
             break
         
@@ -73,11 +77,11 @@ if __name__ == "__main__":
             # First remove ANSI escape sequences, then filter non-printable characters
             cleaned_response = clean_ansi_codes(assistant_response)
             clean_response = ''.join(char for char in cleaned_response if ord(char) >= 32)
-            print(f"Assistant: {clean_response}")
+            print(f"{Fore.YELLOW}Assistant: {clean_response}")
             speak_text(clean_response, FLITE_VOICE)
             history.append({"user": user_input, "assistant": clean_response})
         else:
-            print("Error: no output from llama.cpp")
+            print(f"{Fore.RED}Error: no output from llama.cpp")
 
 
 
